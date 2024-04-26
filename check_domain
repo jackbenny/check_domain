@@ -23,7 +23,7 @@
 # https://github.com/Elyrith/check_domain                                     #
 ###############################################################################
 
-# VERSION: Version 1.1
+# VERSION: Version 1.2.2
 # AUTHOR: See README. This version updated by Ryan Loudfoot (ryan@delotha.com)
 
 PROGRAM=$(whereis -b -B /{bin,sbin,usr,etc} /{bin,sbin,usr,etc}/* -f whois | awk '{print $2}')
@@ -148,9 +148,12 @@ case "$domain" in
 *.se)
 	expiration=$(echo "$out" | awk '/expires:/{split($2, a, "-"); printf("%s-%s-%s\n", a[1], a[2], a[3])}')
 	;;
+*.cloud)
+	expiration=$(echo "$out" | awk '/Registry Expiry Date: /{split($4, a, "-"); printf("%d-%02d-%02d\n", a[1], a[2], a[3])}')
+    ;;
 *.net)
 	expiration=$(echo "$out" | awk '/Registry Expiry Date: /{split($4, a, "-"); printf("%d-%02d-%02d\n", a[1], a[2], a[3])}')
-        ;;
+    ;;
 *.org)
 	expiration=$(echo "$out" | awk -F: '/ Expiry Date:/{print substr($0, length($1) + 3, 10)}')
 	;;
